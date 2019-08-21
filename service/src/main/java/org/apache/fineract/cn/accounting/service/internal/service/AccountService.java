@@ -40,7 +40,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import org.apache.fineract.cn.lang.DateRange;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -51,15 +53,18 @@ public class AccountService {
   private final AccountRepository accountRepository;
   private final AccountEntryRepository accountEntryRepository;
   private final CommandRepository commandRepository;
+  private final Logger logger;
 
   @Autowired
   public AccountService(final AccountRepository accountRepository,
                         final AccountEntryRepository accountEntryRepository,
-                        final CommandRepository commandRepository) {
+                        final CommandRepository commandRepository,
+                        @Qualifier("accounting-logger") final Logger logger) {
     super();
     this.accountRepository = accountRepository;
     this.accountEntryRepository = accountEntryRepository;
     this.commandRepository = commandRepository;
+    this.logger = logger;
   }
 
   public Optional<Account> findAccount(final String identifier) {
@@ -99,6 +104,8 @@ public class AccountService {
                                               final Pageable pageable){
 
     final AccountEntity accountEntity = this.accountRepository.findByIdentifier(identifier);
+
+    logger.info("Find account entries for identifier {} and accountEntry {} and daterange {}", identifier, accountEntity.getIdentifier(), range);
 
     final Page<AccountEntryEntity> accountEntryEntities;
     if (message == null) {

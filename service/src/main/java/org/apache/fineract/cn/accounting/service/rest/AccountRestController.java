@@ -45,7 +45,9 @@ import org.apache.fineract.cn.api.annotation.ThrowsException;
 import org.apache.fineract.cn.command.gateway.CommandGateway;
 import org.apache.fineract.cn.lang.DateRange;
 import org.apache.fineract.cn.lang.ServiceException;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -65,15 +67,18 @@ public class AccountRestController {
   private final CommandGateway commandGateway;
   private final AccountService accountService;
   private final LedgerService ledgerService;
+  private final Logger logger;
 
   @Autowired
   public AccountRestController(final CommandGateway commandGateway,
                                final AccountService accountService,
-                               final LedgerService ledgerService) {
+                               final LedgerService ledgerService,
+                               @Qualifier("accounting-logger") final Logger logger) {
     super();
     this.commandGateway = commandGateway;
     this.accountService = accountService;
     this.ledgerService = ledgerService;
+    this.logger = logger;
   }
 
   @Permittable(value = AcceptedTokenType.TENANT, groupId = PermittableGroupIds.THOTH_ACCOUNT)
@@ -192,11 +197,13 @@ public class AccountRestController {
   ) {
     final DateRange range = DateRange.fromIsoString(dateRange);
 
-    return ResponseEntity.ok(this.accountService.fetchAccountEntries(
-        identifier,
-        range,
-        message,
-        PageableBuilder.create(pageIndex, size, sortColumn == null ? "transactionDate" : sortColumn, sortDirection)));
+    AccountEntryPage accountEntryPage = this.accountService.fetchAccountEntries(
+            identifier,
+            range,
+            message,
+            PageableBuilder.create(pageIndex, size, sortColumn == null ? "transactionDate" : sortColumn, sortDirection));
+
+    return ResponseEntity.ok(accountEntryPage);
   }
 
   @Permittable(value = AcceptedTokenType.TENANT, groupId = PermittableGroupIds.THOTH_ACCOUNT)
