@@ -20,6 +20,15 @@
 -->
 <configuration>
 
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+       <destination>w-logstash:6000</destination>
+       <keepAliveDuration>5 minutes</keepAliveDuration>
+       <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+          <includeMdc>true</includeMdc>
+          <customFields>{"appname": "f-accounting", "environment": "default"}</customFields>
+       </encoder>
+    </appender>
+
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
@@ -28,26 +37,32 @@
 
     <logger name="com" level="INFO">
         <appender-ref ref="STDOUT" />
+        <appender-ref ref="LOGSTASH"/>
     </logger>
 
     <logger name="org" level="INFO">
         <appender-ref ref="STDOUT" />
+        <appender-ref ref="LOGSTASH"/>
     </logger>
 
     <logger name="org.apache.fineract.cn" level="DEBUG">
         <appender-ref ref="STDOUT" />
+        <appender-ref ref="LOGSTASH"/>
     </logger>
 
     <logger name="accounting-logger" level="DEBUG">
         <appender-ref ref="STDOUT" />
+        <appender-ref ref="LOGSTASH"/>
     </logger>
 
     <logger name="io" level="INFO">
         <appender-ref ref="STDOUT" />
+        <appender-ref ref="LOGSTASH"/>
     </logger>
 
     <logger name="net" level="INFO">
         <appender-ref ref="STDOUT" />
+        <appender-ref ref="LOGSTASH"/>
     </logger>
 
 </configuration>
