@@ -24,7 +24,7 @@ ext.versions = [
         frameworklang      : '0.1.0-BUILD-SNAPSHOT',
         frameworkmariadb   : '0.1.0-BUILD-SNAPSHOT',
         frameworkcassandra : '0.1.0-BUILD-SNAPSHOT',
-        frameworkcommand   : '0.1.3-BUILD-SNAPSHOT',
+        frameworkcommand   : '0.1.5-BUILD-SNAPSHOT',
         frameworktest      : '0.1.0-BUILD-SNAPSHOT',
         frameworkasync     : '0.1.0-BUILD-SNAPSHOT',
         frameworkcustomer  : '0.1.0-BUILD-SNAPSHOT',
@@ -46,7 +46,7 @@ repositories {
     jcenter()
     mavenLocal()
     maven {
-	url "http://registry-nd.dev.redbee.io/repository/waas-snapshot"
+	     url "http://registry-nd.dev.redbee.io/repository/waas-snapshot"
 
             credentials {
                 username = String.valueOf(System.getenv("NEXUS_USER"))
@@ -82,22 +82,6 @@ jar {
     from sourceSets.main.allSource
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
-
-artifactory {
-    contextUrl = System.getenv("ARTIFACTORY_URL")
-    publish {
-        repository {
-            repoKey = project.findProperty('artifactoryRepoKey')
-            username = System.getenv("ARTIFACTORY_USER")
-            password = System.getenv("ARTIFACTORY_PASSWORD")
-        }
-
-        defaults {
-            publications ('api', 'service', 'bootService', 'componentTest', 'importer')
-        }
-    }
-}
-artifactoryPublish.dependsOn('clean','publishToMavenLocal')
 
 license {
     header rootProject.file('../HEADER')
