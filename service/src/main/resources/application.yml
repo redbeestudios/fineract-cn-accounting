@@ -79,3 +79,11 @@ bonecp:
 
 flyway:
   enabled: false
+
+logging:
+  level:
+    org: info
+    org.apache.fineract: debug
+    com: info
+    io: info
+    net: info
