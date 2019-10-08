@@ -117,7 +117,7 @@ public final class Account {
   }
 
   public String getState() {
-    return this.state.name();
+    return  this.state != null ? this.state.name(): null;
   }
 
   public void setState(final String state) {
