@@ -18,18 +18,29 @@
  */
 package org.apache.fineract.cn.accounting.service.internal.command;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import org.apache.fineract.cn.accounting.api.v1.domain.Account;
 
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class CreateAccountCommand {
-  private final Account account;
+
+  private Account account;
 
   public CreateAccountCommand(final Account account) {
     super();
     this.account = account;
   }
 
+  public CreateAccountCommand() {
+    super();
+  }
+
   public Account account() {
     return this.account;
+  }
+
+  public Account getAccount() {
+    return account;
   }
 
   @Override
