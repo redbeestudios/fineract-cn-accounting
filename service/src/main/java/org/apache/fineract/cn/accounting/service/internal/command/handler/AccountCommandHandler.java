@@ -55,7 +55,9 @@ import org.apache.fineract.cn.command.annotation.Aggregate;
 import org.apache.fineract.cn.command.annotation.CommandHandler;
 import org.apache.fineract.cn.command.annotation.CommandLogLevel;
 import org.apache.fineract.cn.command.annotation.EventEmitter;
+import org.apache.fineract.cn.command.annotation.NotificationFlag;
 import org.apache.fineract.cn.command.gateway.CommandGateway;
+import org.apache.fineract.cn.command.kafka.KafkaTopicConstants;
 import org.apache.fineract.cn.lang.ServiceException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,7 +97,11 @@ public class AccountCommandHandler {
 
   @Transactional
   @CommandHandler(logStart = CommandLogLevel.INFO, logFinish = CommandLogLevel.INFO)
-  @EventEmitter(selectorName = EventConstants.SELECTOR_NAME, selectorValue = EventConstants.POST_ACCOUNT)
+  @EventEmitter(selectorName = EventConstants.SELECTOR_NAME,
+          selectorValue = EventConstants.POST_ACCOUNT,
+          selectorKafkaEvent = NotificationFlag.NOTIFY,
+          selectorKafkaTopic = KafkaTopicConstants.TOPIC_ACCOUNT,
+          selectorKafkaTopicError = KafkaTopicConstants.TOPIC_ERROR_ACCOUNT)
   public String createAccount(final CreateAccountCommand createAccountCommand) {
     final Account account = createAccountCommand.account();
     final AccountEntity accountEntity = new AccountEntity();
