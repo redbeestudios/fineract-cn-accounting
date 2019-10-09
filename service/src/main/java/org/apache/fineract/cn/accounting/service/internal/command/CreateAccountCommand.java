@@ -19,11 +19,13 @@
 package org.apache.fineract.cn.accounting.service.internal.command;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.fineract.cn.accounting.api.v1.domain.Account;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class CreateAccountCommand {
 
+  @JsonProperty("command")
   private Account account;
 
   public CreateAccountCommand(final Account account) {
