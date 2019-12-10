@@ -29,7 +29,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 public final class Account {
 
   private AccountType type;
-  @ValidIdentifier(maxLength = 34)
+  @ValidIdentifier(maxLength = 350)
   private String identifier;
   @NotEmpty
   @Length(max = 256)

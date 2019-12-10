@@ -25,7 +25,7 @@ import org.apache.fineract.cn.lang.validation.constraints.ValidIdentifier;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public final class Debtor {
-  @ValidIdentifier(maxLength = 34)
+  @ValidIdentifier(maxLength = 350)
   private String accountNumber;
   @NotNull
   @DecimalMin(value = "0.00", inclusive = false)
