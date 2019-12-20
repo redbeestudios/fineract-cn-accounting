@@ -24,20 +24,15 @@ ext.versions = [
         frameworkanubis    : '0.1.0-BUILD-SNAPSHOT',
         frameworkapi       : '0.1.0-BUILD-SNAPSHOT',
         frameworklang      : '0.1.0-BUILD-SNAPSHOT',
-        frameworkmariadb   : '0.1.0-BUILD-SNAPSHOT',
+        frameworkpostgresql: '0.1.0-BUILD-SNAPSHOT',
         frameworkcassandra : '0.1.0-BUILD-SNAPSHOT',
         frameworkcommand   : '0.1.5-BUILD-SNAPSHOT',
         frameworktest      : '0.1.0-BUILD-SNAPSHOT',
         frameworkasync     : '0.1.0-BUILD-SNAPSHOT',
         frameworkcustomer  : '0.1.0-BUILD-SNAPSHOT',
         apachecsvreader    : '1.4',
-        validator   : '5.3.0.Final'
+        validator          : '5.3.0.Final',
 ]
-
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'maven-publish'
-apply plugin: 'io.spring.dependency-management'
 
 tasks.withType(JavaCompile) {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -72,7 +67,8 @@ ext['spring-data-releasetrain.version'] = 'Gosling-SR2A'
 
 dependencies {
     compile(
-            [group: 'com.google.code.findbugs', name: 'jsr305']
+            [group: 'com.google.code.findbugs', name: 'jsr305'],
+            [group: 'org.apache.fineract.cn', name: 'postgresql', version: versions.frameworkpostgresql]
     )
 
     testCompile(
@@ -81,13 +77,14 @@ dependencies {
 }
 
 jar {
-    from sourceSets.main.allSource
+    from sourceSets.main.java
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 license {
     header rootProject.file('../HEADER')
     strictCheck true
+    exclude 'banner.txt'
     mapping {
         java = 'SLASHSTAR_STYLE'
         xml = 'XML_STYLE'
@@ -99,17 +96,18 @@ license {
 rat {
     // List of exclude directives, defaults to ['**/.gradle/**']
     excludes = [
+            "**/*.log",
+            "**/banner.txt",
             "**/.dockerignore/**",
             "**/.idea/**",
             "**/.gradle/**",
             "**/gradle/**",
             "**/build/**",
-            "component-test/src/main/resources/importdata/*.csv",
+            "**/*.csv",
             "gradlew",
             "gradlew.bat",
             "README.md"
     ]
-    plainOutput = true
 }
 
 publishing {

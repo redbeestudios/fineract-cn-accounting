@@ -19,51 +19,29 @@
 package org.apache.fineract.cn.accounting.service.internal.command.handler;
 
 import org.apache.fineract.cn.accounting.api.v1.EventConstants;
-import org.apache.fineract.cn.accounting.api.v1.domain.Account;
-import org.apache.fineract.cn.accounting.api.v1.domain.AccountCommand;
-import org.apache.fineract.cn.accounting.api.v1.domain.AccountEntry;
-import org.apache.fineract.cn.accounting.api.v1.domain.AccountType;
-import org.apache.fineract.cn.accounting.api.v1.domain.JournalEntry;
+import org.apache.fineract.cn.accounting.api.v1.domain.*;
 import org.apache.fineract.cn.accounting.service.ServiceConstants;
-import org.apache.fineract.cn.accounting.service.internal.command.BookJournalEntryCommand;
-import org.apache.fineract.cn.accounting.service.internal.command.CloseAccountCommand;
-import org.apache.fineract.cn.accounting.service.internal.command.CreateAccountCommand;
-import org.apache.fineract.cn.accounting.service.internal.command.DeleteAccountCommand;
-import org.apache.fineract.cn.accounting.service.internal.command.LockAccountCommand;
-import org.apache.fineract.cn.accounting.service.internal.command.ModifyAccountCommand;
-import org.apache.fineract.cn.accounting.service.internal.command.ReleaseJournalEntryCommand;
-import org.apache.fineract.cn.accounting.service.internal.command.ReopenAccountCommand;
-import org.apache.fineract.cn.accounting.service.internal.command.UnlockAccountCommand;
-import org.apache.fineract.cn.accounting.service.internal.repository.AccountEntity;
-import org.apache.fineract.cn.accounting.service.internal.repository.AccountEntryEntity;
-import org.apache.fineract.cn.accounting.service.internal.repository.AccountEntryRepository;
-import org.apache.fineract.cn.accounting.service.internal.repository.AccountRepository;
-import org.apache.fineract.cn.accounting.service.internal.repository.CommandEntity;
-import org.apache.fineract.cn.accounting.service.internal.repository.CommandRepository;
-import org.apache.fineract.cn.accounting.service.internal.repository.JournalEntryEntity;
-import org.apache.fineract.cn.accounting.service.internal.repository.JournalEntryRepository;
-import org.apache.fineract.cn.accounting.service.internal.repository.LedgerEntity;
-import org.apache.fineract.cn.accounting.service.internal.repository.LedgerRepository;
-import java.math.BigDecimal;
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import org.apache.fineract.cn.accounting.service.internal.command.*;
+import org.apache.fineract.cn.accounting.service.internal.repository.*;
 import org.apache.fineract.cn.api.util.UserContextHolder;
 import org.apache.fineract.cn.command.annotation.Aggregate;
 import org.apache.fineract.cn.command.annotation.CommandHandler;
 import org.apache.fineract.cn.command.annotation.CommandLogLevel;
 import org.apache.fineract.cn.command.annotation.EventEmitter;
-import org.apache.fineract.cn.command.annotation.NotificationFlag;
 import org.apache.fineract.cn.command.gateway.CommandGateway;
-import org.apache.fineract.cn.command.kafka.KafkaTopicConstants;
 import org.apache.fineract.cn.lang.ServiceException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 @Aggregate
@@ -97,11 +75,7 @@ public class AccountCommandHandler {
 
   @Transactional
   @CommandHandler(logStart = CommandLogLevel.INFO, logFinish = CommandLogLevel.INFO)
-  @EventEmitter(selectorName = EventConstants.SELECTOR_NAME,
-          selectorValue = EventConstants.POST_ACCOUNT,
-          selectorKafkaEvent = NotificationFlag.NOTIFY,
-          selectorKafkaTopic = KafkaTopicConstants.TOPIC_ACCOUNT,
-          selectorKafkaTopicError = KafkaTopicConstants.TOPIC_ERROR_ACCOUNT)
+  @EventEmitter(selectorName = EventConstants.SELECTOR_NAME, selectorValue = EventConstants.POST_ACCOUNT)
   public String createAccount(final CreateAccountCommand createAccountCommand) {
     final Account account = createAccountCommand.account();
     final AccountEntity accountEntity = new AccountEntity();
