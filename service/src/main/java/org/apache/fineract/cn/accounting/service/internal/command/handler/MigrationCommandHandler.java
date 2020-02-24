@@ -92,7 +92,7 @@ public class MigrationCommandHandler {
 
     flyway.migrate();
 
-    final String versionNumber = "1";
+    //final String versionNumber = "1";
 
     final CassandraJourneyRoute initialRoute = CassandraJourneyRoute
         .plan("1")
@@ -164,7 +164,7 @@ public class MigrationCommandHandler {
       this.migrateLedgerTotals();
     }
 
-    return versionNumber;
+    return EventConstants.INITIALIZE;
   }
 
   public void migrateLedgerTotals() {
